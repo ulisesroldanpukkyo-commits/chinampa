@@ -4,26 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <title>Chinampa PlantScan AI 🌿</title>
+    <title>Chinampa PlantScan AI</title>
 
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icono-192.png') }}">
-    
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='icono-192.png') }}">
-
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     <meta name="theme-color" content="#2d5a27">
-</head>
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <title>Chinampa PlantScan AI 🌿</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+
     <style>
-        /* --- ESTILOS RECIÉN RECUPERADOS Y NUEVOS --- */
-        :root { --primary: #2d5a27; --wa: #25d366; --brown: #795548; }
+        :root { 
+            --primary: #2d5a27; 
+            --wa: #25d366; 
+            --brown: #795548; 
+        }
 
         /* Splash Screen */
         .splash-screen {
@@ -31,8 +26,20 @@
             background-color: #f6faf5; display: flex; justify-content: center;
             align-items: center; z-index: 10000; transition: opacity 0.5s;
         }
-        .cactus-loader { font-size: 5rem; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        /* Animación del Logo/Cactus en el Splash */
+        .cactus-loader { 
+            width: 120px; height: 120px; 
+            border-radius: 20%; 
+            animation: pulse 1.5s infinite; 
+            object-fit: cover;
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
 
         /* Tarjetas de Consejos "El Chinampero" */
         .tip-card {
@@ -53,13 +60,30 @@
         .bg-sustrato { background-color: var(--brown); }
 
         /* Modal */
-        .modal { position: fixed; z-index: 9000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
+        .modal { 
+            position: fixed; z-index: 9000; left: 0; top: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; 
+        }
+        .modal-content { 
+            background: white; padding: 25px; border-radius: 25px; 
+            width: 85%; max-width: 400px; text-align: center; 
+        }
         
         .hidden { display: none !important; }
         .hidden-splash { opacity: 0; visibility: hidden; }
+
+        /* Botón Primario (Igual al de Analizar) */
+        .primary {
+            display: block; width: 100%; background-color: #4caf50;
+            color: white; padding: 15px; border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            transition: all 0.2s ease; margin-top: 15px;
+        }
+        .primary:active { transform: scale(0.98); background-color: #43a047; }
     </style>
 </head>
+
 <body>
 
     <div id="splashScreen" class="splash-screen">

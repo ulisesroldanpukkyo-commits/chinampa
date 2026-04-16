@@ -33,8 +33,10 @@ body {
     align-items: center; 
     justify-content: center; 
     gap: 12px; 
-    margin-bottom: 20px; 
-    padding-top: 10px; 
+    margin-bottom: 10px; 
+    padding-top: 10px;
+    background: transparent;
+    width: 100%; 
 }
 
 .logo-inline { 
@@ -51,6 +53,7 @@ body {
     color: var(--primary); 
     font-weight: 800; 
     letter-spacing:-1px;
+    line-height: 1.2;
 }
 
 /* --- CÁMARA Y CONTROLES --- */

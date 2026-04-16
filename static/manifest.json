@@ -1,7 +1,7 @@
 {
   "name": "Chinampa PlantScan AI",
   "short_name": "Chinampa",
-  "description": "Identificación y diagnostico de plantas con Redes Neuronales por Ing. Ulises Roldán.",
+  "description": "Identificación y diagnóstico de plantas con Redes Neuronales por Ing. Ulises Roldán.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,13 +9,13 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/static/icon-192.png",
+      "src": "/static/icono-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/static/icon-512.png",
+      "src": "/static/icono-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -23,8 +23,9 @@
   "shortcuts": [
     {
       "name": "Escanear Planta",
+      "short_name": "Escanear",
       "url": "/?action=scan",
-      "icons": [{ "src": "/static/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/static/icono-192.png", "sizes": "192x192" }]
     }
   ]
 }

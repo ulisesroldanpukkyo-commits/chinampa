@@ -247,7 +247,10 @@
                             <div class="care-badge"><span>💧</span><strong>Riego</strong><br>${info.riego || 'N/A'}</div>
                             <div class="care-badge"><span>🪴</span><strong>Tierra</strong><br>${info.sustrato || 'N/A'}</div>
                         </div>
-                        <h3>Consejos del Experto:</h3>
+                        <h3>💡 Tips del Experto Chinampa:</h3>
+                        <ul class="tips-list">
+                            ${info.consejos.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
                         <ul style="padding-left:20px;">${info.consejos.map(t => `<li>${t}</li>`).join('')}</ul>
                         <a href="https://wa.me/525620238734?text=${waMsg}" target="_blank" class="btn-wa-premium">🛒 Consultar Existencia</a>
                         <button onclick="location.reload()" class="primary" style="margin-top:10px; background:#666;">Nueva consulta</button>

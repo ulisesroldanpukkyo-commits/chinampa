@@ -51,34 +51,25 @@
         </div>
 
         <footer class="main-footer" style="margin-top: 50px; padding: 40px 20px; background: #fcfcfc; border-top: 1px solid #f0f0f0; border-radius: 30px 30px 0 0; text-align: center;">
-    <div class="footer-title" style="color: var(--primary); font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 1px;">CONTACTO CHINAMPA</div>
-    
-    <div class="contact-info" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-        <div class="contact-item" style="color: #666; font-size: 0.95rem;">
-            <span>📍</span> <span>Xochimilco, Iztapalapa, Iztacalco, CDMX</span>
-        </div>
-        <a href="https://wa.me/525620238734" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none; font-size: 1rem;">
-            <span>🟢</span> WhatsApp: 5620238734
-        </a>
-    </div>
-
-    <div class="footer-credits" style="border-top: 1px solid #eee; padding-top: 25px;">
-        <div style="position: relative; display: inline-block; margin-bottom: 20px;">
-            <span style="font-size: 2rem; color: var(--primary); font-family: serif; position: absolute; left: -25px; top: -15px; opacity: 0.2;">“</span>
-            <p style="font-style: italic; color: #444; font-size: 0.95rem; margin: 0; font-weight: 500; letter-spacing: 0.3px;">
-                Raíces Neuronales: Inteligencia para tu Jardín 🧬
-            </p>
-            <span style="font-size: 2rem; color: var(--primary); font-family: serif; position: absolute; right: -25px; bottom: -20px; opacity: 0.2;">”</span>
-        </div>
-
-        <p style="margin: 10px 0 5px 0; font-size: 0.85rem; color: #888;"><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
-        
-    </div>
-</footer>
+            <div class="footer-title" style="color: var(--primary); font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 1px;">CONTACTO CHINAMPA</div>
+            <div class="contact-info" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+                <div class="contact-item" style="color: #666; font-size: 0.95rem;">
+                    <span>📍</span> <span>Xochimilco, Iztapalapa, Iztacalco, CDMX</span>
+                </div>
+                <a href="https://wa.me/525620238734" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none; font-size: 1rem;">
+                    <span>🟢</span> WhatsApp: 5620238734
+                </a>
+            </div>
+            <div class="footer-credits" style="border-top: 1px solid #eee; padding-top: 25px;">
+                <p style="font-style: italic; color: #444; font-size: 0.95rem; margin: 0; font-weight: 500;">
+                    Raíces Neuronales: Inteligencia para tu Jardín 🧬
+                </p>
+                <p style="margin: 10px 0 5px 0; font-size: 0.85rem; color: #888;"><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
+            </div>
+        </footer>
     </main>
 
 <script>
-    // --- CONSTANTES ---
     const v = document.getElementById("camVideo");
     const c = document.getElementById("camCanvas");
     const imgPrev = document.getElementById("filePreview");
@@ -89,24 +80,22 @@
     const loadingMsg = document.getElementById("loadingMessage");
     const progress = document.getElementById("progress");
 
-    // --- 1. LÓGICA DEL SEMÁFORO DE TEMPORADA ---
     function updateSeasonBanner() {
         const month = new Date().getMonth() + 1; 
         const banner = document.getElementById("seasonBanner");
-        
         if (month >= 3 && month <= 5) {
             banner.className = "season-banner season-spring";
-            banner.innerHTML = "🌸 <b>Temporada de Primavera:</b> Tus plantas están en plena floración y necesitan energía extra. Aplica fertilizante <b>cada 15 días</b>. ¡Pregunta por nuestra fórmula <b>Chinampa</b>!";
+            banner.innerHTML = "🌸 <b>Temporada de Primavera:</b> Tus plantas están en plena floración. Aplica fertilizante <b>cada 15 días</b>.";
         } else if (month >= 6 && month <= 8) {
             banner.className = "season-banner season-summer";
-            banner.innerHTML = "☀️ <b>Temporada de Verano:</b> Mucho calor. Revisa el riego de tus suculentas con más frecuencia. ¡Tenemos sustrato mineral para mejorar el drenaje!";
+            banner.innerHTML = "☀️ <b>Temporada de Verano:</b> Mucho calor. Revisa el riego de tus suculentas con más frecuencia.";
         } else {
             banner.className = "season-banner season-spring";
-            banner.innerHTML = "🌿 <b>Temporada Activa:</b> El secreto de una suculenta sana es un <b>sustrato mineral</b> con drenaje perfecto. En <b>Chinampa</b> tenemos la mezcla ideal.";
+            banner.innerHTML = "🌿 <b>Temporada Activa:</b> En <b>Chinampa</b> tenemos el sustrato mineral ideal para tus plantas.";
         }
     }
 
-    // --- 2. LÓGICA DEL HISTORIAL ---
+    // --- CORRECCIÓN: Guardar consejos en el historial ---
     function saveToHistory(plantData) {
         let history = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
         
@@ -119,15 +108,33 @@
             cuidados: {
                 sol: plantData.sol,
                 riego: plantData.riego,
-                sustrato: plantData.sustrato
+                sustrato: plantData.sustrato,
+                consejos: plantData.consejos // <--- Guardamos el array de consejos
             }
         };
 
         history = history.filter(item => item.nombre !== newEntry.nombre);
         history.unshift(newEntry);
-        
         localStorage.setItem('chinampa_garden', JSON.stringify(history.slice(0, 10))); 
         renderHistory();
+    }
+
+    // --- CORRECCIÓN: Función para mostrar detalles incluyendo consejos ---
+    function showCareDetails(id) {
+        const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
+        const item = list.find(p => p.id === id);
+        
+        if (item) {
+            const listaConsejos = (item.cuidados.consejos && item.cuidados.consejos.length > 0) 
+                ? "\n• " + item.cuidados.consejos.join("\n• ") 
+                : "\nNo hay consejos adicionales.";
+
+            alert(`📋 GUÍA DE CUIDADOS: ${item.nombre}\n\n` +
+                  `☀️ Sol: ${item.cuidados.sol}\n` +
+                  `💧 Riego: ${item.cuidados.riego}\n` +
+                  `🪴 Tierra: ${item.cuidados.sustrato}\n\n` +
+                  `💡 CONSEJOS CHINAMPA:${listaConsejos}`);
+        }
     }
 
     function renderHistory() {
@@ -151,7 +158,7 @@
                             ${alerta}
                         </div>
                         <div class="history-actions">
-                            <button class="btn-mini btn-care" onclick="alert('📋 GUÍA DE CUIDADOS\\n\\n☀️ Sol: ${item.cuidados.sol}\\n💧 Riego: ${item.cuidados.riego}\\n🪴 Tierra: ${item.cuidados.sustrato}')">📋 Ver Cuidados</button>
+                            <button class="btn-mini btn-care" onclick="showCareDetails(${item.id})">📋 Ver Cuidados</button>
                             <a href="https://wa.me/525620238734?text=Hola!%20Tengo%20dudas%20sobre%20mi%20${item.nombre}" 
                                class="btn-mini btn-wa-mini">💬 Consultar</a>
                         </div>
@@ -168,7 +175,6 @@
         }
     }
 
-    // --- 3. EVENTOS DE CÁMARA ---
     btnStart.onclick = async () => {
         try {
             const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -204,13 +210,11 @@
         }
     };
 
-    // --- 4. ANÁLISIS ---
     btnUse.onclick = async () => {
         if(!window.selectedFile) return;
         
         progress.classList.remove("hidden");
-        const messages = ["Escaneando follaje...", "Analizando patrones de salud...", "Consultando al Doctor Botánico...", "Identificando especie...", "Preparando consejos Chinampa..."];
-        
+        const messages = ["Escaneando follaje...", "Analizando salud...", "Identificando especie...", "Preparando consejos..."];
         let i = 0;
         const interval = setInterval(() => {
             loadingMsg.innerText = messages[i % messages.length];
@@ -228,32 +232,24 @@
                 const info = d.result;
                 saveToHistory(info);
 
-                // MENSAJE DE WHATSAPP MEJORADO
-                const waMsg = `Hola%20Chinampa!%20🌿%0A%0AAcabo%20de%20escanear%20esta%20planta%20con%20tu%20App:%0A✅%20*${info.nombre_comun}*%0A🧬%20_${info.nombre_cientifico}_%0A%0A¿La%20tienes%20disponible%20en%20el%20puesto?`;
+                const waMsg = `Hola%20Chinampa!%20🌿%0A%0AAcabo%20de%20escanear%20esta%20planta%20con%20tu%20App:%0A✅%20*${info.nombre_comun}*%0A🧬%20_${info.nombre_cientifico}_`;
                 
                 document.getElementById("results").innerHTML = `
                     <div class="result-card">
                         <h2 style="color:var(--primary); margin-bottom:5px;">${info.nombre_comun}</h2>
                         <p style="margin-top:0;"><i>${info.nombre_cientifico}</i></p>
-                        
                         <div class="warning-box">
                             <strong>🩺 Diagnóstico:</strong> ${info.salud}<br>
                             <small>${info.advertencias}</small>
                         </div>
-
                         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:20px 0;">
                             <div class="care-badge"><span>☀️</span><strong>Luz</strong><br>${info.sol || 'N/A'}</div>
                             <div class="care-badge"><span>💧</span><strong>Riego</strong><br>${info.riego || 'N/A'}</div>
                             <div class="care-badge"><span>🪴</span><strong>Tierra</strong><br>${info.sustrato || 'N/A'}</div>
                         </div>
-
                         <h3>Consejos del Experto:</h3>
                         <ul style="padding-left:20px;">${info.consejos.map(t => `<li>${t}</li>`).join('')}</ul>
-                        
-                        <a href="https://wa.me/525620238734?text=${waMsg}" target="_blank" class="btn-wa-premium">
-                            🛒 Consultar Existencia
-                        </a>
-
+                        <a href="https://wa.me/525620238734?text=${waMsg}" target="_blank" class="btn-wa-premium">🛒 Consultar Existencia</a>
                         <button onclick="location.reload()" class="primary" style="margin-top:10px; background:#666;">Nueva consulta</button>
                     </div>`;
                 
@@ -272,16 +268,13 @@
     updateSeasonBanner();
     renderHistory();
 
-    // Registro del Service Worker para cumplimiento de PWA (Android)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/static/sw.js')
-            .then(reg => console.log('Chinampa SW registrado con éxito'))
-            .catch(err => console.log('Error al registrar SW:', err));
-    });
-}
-
-
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(reg => console.log('Chinampa SW registrado'))
+                .catch(err => console.log('Error SW:', err));
+        });
+    }
 </script>
 </body>
 </html>

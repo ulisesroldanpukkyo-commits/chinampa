@@ -123,4 +123,7 @@ def identify():
         return jsonify({"ok": False, "error": "No se pudo leer la imagen enviada"}), 400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Render asigna un puerto dinámico a través de la variable de entorno 'PORT'
+    port = int(os.environ.get("PORT", 5000))
+    # Importante: host 0.0.0.0 es obligatorio para que Render pueda redirigir el tráfico
+    app.run(host="0.0.0.0", port=port)

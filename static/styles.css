@@ -17,7 +17,22 @@ body {
     display: flex;
     justify-content: center;
 }
+body, html {
+    margin: 0;
+    padding: 0;
+    /* Esto evita que el notch del iPhone genere espacios blancos raros */
+    padding-top: env(safe-area-inset-top); 
+}
 
+.container {
+    padding-top: 0 !important;
+}
+
+/* Reducir espacio del banner de frases para que la cámara suba más */
+.season-banner {
+    margin: 5px 15px 10px 15px; /* Menos margen arriba/abajo */
+    padding: 10px;
+}
 .container {
     width: 100%;
     max-width: 500px;

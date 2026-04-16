@@ -382,5 +382,35 @@ button.primary:active { transform: scale(0.96); }
     border-bottom: 2px solid #e8f5e9;
     padding-bottom: 5px;
 }
+/* Botones de Venta */
+.btn-wa-venta {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.btn-wa-venta:active { transform: scale(0.98); }
+
+.bg-whatsapp { background-color: #25d366; }
+.bg-sustrato { background-color: #795548; }
+
+/* Ajustes del Banner de Consejos Aleatorios */
+.season-banner {
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 15px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+.season-banner b { display: block; color: #1b5e20; font-size: 0.75rem; text-transform: uppercase; }
 .btn-care { background: #e8f5e9; color: var(--primary); }
 .btn-wa-mini { background: #25d366; color: white; text-decoration: none; text-align: center; }

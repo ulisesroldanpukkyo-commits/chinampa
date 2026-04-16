@@ -8,39 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <meta name="theme-color" content="#2d5a27">
-    <style>
-        /* Estilos del Modal */
-        .modal {
-            position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; padding: 25px; border-radius: 25px;
-            width: 85%; max-width: 400px; text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease-out;
-        }
-        .modal-header { margin-bottom: 15px; }
-        .modal-emoji { font-size: 3.5rem; display: block; margin-bottom: 5px; }
-        #modalTitle { color: #2d5a27; font-size: 1.3rem; margin: 0; font-weight: 800; }
-        .modal-body { margin: 20px 0; max-height: 300px; overflow-y: auto; }
-
-        /* Tarjetas de consejos */
-        .tip-card {
-            background: #f1f8f1; border-left: 5px solid #4caf50;
-            padding: 12px; margin-bottom: 12px; border-radius: 10px;
-            text-align: left; font-size: 0.95rem; display: flex; gap: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .tip-card span { font-size: 1.2rem; }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .hidden { display: none !important; }
-    </style>
 </head>
 <body>
     <main class="container">
@@ -62,7 +29,7 @@
                 <button id="btnStart" class="primary">Encender Cámara</button>
                 <button id="btnShot" class="primary hidden" style="background:#555;">Tomar Foto</button>
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-                <label for="fileInput" style="display:block; text-align:center; padding:10px; cursor:pointer; color:#2d5a27; font-weight:bold;">📁 Galería de Fotos</label>
+                <label for="fileInput" style="display:block; text-align:center; padding:10px; cursor:pointer; color:#2d5a27; font-weight:bold;">📁 Seleccionar de Galería</label>
                 <input id="fileInput" type="file" accept="image/*" class="hidden">
                 <button id="btnUse" class="primary hidden" style="background-color: #4caf50;">🔍 Analizar Planta</button>
             </div>
@@ -83,19 +50,22 @@
             <button onclick="clearHistory()" style="background:none; border:none; color:#999; font-size:0.7rem; margin-top:10px; text-decoration:underline;">Borrar historial</button>
         </div>
 
-        <div id="careModal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="modal-emoji">👨‍🌾</span>
-                    <h2 id="modalTitle">El Chinampero dice:</h2>
+        <footer class="main-footer" style="margin-top: 50px; padding: 40px 20px; background: #fcfcfc; border-top: 1px solid #f0f0f0; border-radius: 30px 30px 0 0; text-align: center;">
+            <div class="footer-title" style="color: var(--primary); font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 1px;">CONTACTO CHINAMPA</div>
+            <div class="contact-info" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+                <div class="contact-item" style="color: #666; font-size: 0.95rem;">
+                    <span>📍</span> <span>Xochimilco, CDMX</span>
                 </div>
-                <div id="modalBody" class="modal-body"></div>
-                <button onclick="closeModal()" class="primary">Entendido, ¡gracias!</button>
+                <a href="https://wa.me/525620238734" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none; font-size: 1rem;">
+                    <span>🟢</span> WhatsApp: 5620238734
+                </a>
             </div>
-        </div>
-
-        <footer class="main-footer">
-            <p><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
+            <div class="footer-credits" style="border-top: 1px solid #eee; padding-top: 25px;">
+                <p style="font-style: italic; color: #444; font-size: 0.95rem; margin: 0; font-weight: 500;">
+                    Raíces Neuronales: Inteligencia para tu Jardín 🧬
+                </p>
+                <p style="margin: 10px 0 5px 0; font-size: 0.85rem; color: #888;"><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
+            </div>
         </footer>
     </main>
 
@@ -110,32 +80,25 @@
     const loadingMsg = document.getElementById("loadingMessage");
     const progress = document.getElementById("progress");
 
-    // --- TEMPORADA ---
-function updateSeasonBanner() {
-    const banner = document.getElementById("seasonBanner");
-    
-    const frasesChinamperas = [
-        "🌿 <b>Dato Curioso:</b> Las suculentas cierran sus poros de día para no perder agua. ¡Son expertas en ahorro!",
-        "👨‍🌾 <b>El Chinampero dice:</b> Si las hojas de tu planta están tristes y amarillas, quizás tiene 'pies mojados' (exceso de agua).",
-        "🌸 <b>¿Sabías qué?</b> Hablarle a las plantas sí funciona, no porque entiendan, sino por el CO2 que exhalas al hablarles.",
-        "🌵 <b>Tip Chinampa:</b> El mejor sustrato es el que parece tierra de volcán: poroso, ligero y muy mineral.",
-        "💧 <b>Dato Curioso:</b> El exceso de mimos mata más plantas que el olvido. ¡No riegues si la tierra sigue húmeda!",
-        "🌞 <b>El Chinampero dice:</b> La luz de la ventana no es igual que la del sol directo. ¡Gira tu maceta cada semana!",
-        "🧬 <b>Dato Científico:</b> Las plantas pueden 'escuchar' el agua corriendo a través de las tuberías y dirigir sus raíces hacia allá.",
-        "💡 <b>Tip de Oro:</b> Si vas a trasplantar, hazlo por la tarde para que la planta descanse toda la noche del estrés."
-    ];
+    function updateSeasonBanner() {
+        const month = new Date().getMonth() + 1; 
+        const banner = document.getElementById("seasonBanner");
+        if (month >= 3 && month <= 5) {
+            banner.className = "season-banner season-spring";
+            banner.innerHTML = "🌸 <b>Temporada de Primavera:</b> Tus plantas están en plena floración. Aplica fertilizante <b>cada 15 días</b>.";
+        } else if (month >= 6 && month <= 8) {
+            banner.className = "season-banner season-summer";
+            banner.innerHTML = "☀️ <b>Temporada de Verano:</b> Mucho calor. Revisa el riego de tus suculentas con más frecuencia.";
+        } else {
+            banner.className = "season-banner season-spring";
+            banner.innerHTML = "🌿 <b>Temporada Activa:</b> En <b>Chinampa</b> tenemos el sustrato mineral ideal para tus plantas.";
+        }
+    }
 
-    // Elegimos una frase al azar
-    const fraseAleatoria = frasesChinamperas[Math.floor(Math.random() * frasesChinamperas.length)];
-    
-    // Aplicamos el diseño
-    banner.className = "season-banner season-spring"; // Mantenemos tu clase de estilo verde
-    banner.innerHTML = fraseAleatoria;
-}    
-
-    // --- HISTORIAL ---
+    // --- CORRECCIÓN: Guardar consejos en el historial ---
     function saveToHistory(plantData) {
         let history = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
+        
         const newEntry = {
             id: Date.now(),
             nombre: plantData.nombre_comun,
@@ -146,69 +109,81 @@ function updateSeasonBanner() {
                 sol: plantData.sol,
                 riego: plantData.riego,
                 sustrato: plantData.sustrato,
-                consejos: plantData.consejos
+                consejos: plantData.consejos // <--- Guardamos el array de consejos
             }
         };
+
         history = history.filter(item => item.nombre !== newEntry.nombre);
         history.unshift(newEntry);
         localStorage.setItem('chinampa_garden', JSON.stringify(history.slice(0, 10))); 
         renderHistory();
     }
 
+    // --- CORRECCIÓN: Función para mostrar detalles incluyendo consejos ---
+    function showCareDetails(id) {
+        const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
+        const item = list.find(p => p.id === id);
+        
+        if (item) {
+            const listaConsejos = (item.cuidados.consejos && item.cuidados.consejos.length > 0) 
+                ? "\n• " + item.cuidados.consejos.join("\n• ") 
+                : "\nNo hay consejos adicionales.";
+
+            alert(`📋 GUÍA DE CUIDADOS: ${item.nombre}\n\n` +
+                  `☀️ Sol: ${item.cuidados.sol}\n` +
+                  `💧 Riego: ${item.cuidados.riego}\n` +
+                  `🪴 Tierra: ${item.cuidados.sustrato}\n\n` +
+                  `💡 CONSEJOS CHINAMPA:${listaConsejos}`);
+        }
+    }
+
     function renderHistory() {
         const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
         const container = document.getElementById("historySection");
         const listDiv = document.getElementById("historyList");
+        
         if (list.length > 0) {
             container.classList.remove("hidden");
-            listDiv.innerHTML = list.map(item => `
-                <div class="history-card">
-                    <div class="history-header">
-                        <div>
-                            <span class="history-name">${item.nombre}</span>
-                            <div class="history-meta">${item.fecha}</div>
+            listDiv.innerHTML = list.map(item => {
+                const meses = Math.floor((Date.now() - item.timestamp) / (1000 * 60 * 60 * 24 * 30));
+                const alerta = meses >= 6 ? `<div style="font-size:0.7rem; color:#e67e22; font-weight:bold;">⚠️ Toca renovar sustrato</div>` : '';
+
+                return `
+                    <div class="history-card">
+                        <div class="history-header">
+                            <div>
+                                <span class="history-name">${item.nombre}</span>
+                                <div class="history-meta">Adoptada el ${item.fecha}</div>
+                            </div>
+                            ${alerta}
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-mini btn-care" onclick="showCareDetails(${item.id})">📋 Ver Cuidados</button>
+                            <a href="https://wa.me/525620238734?text=Hola!%20Tengo%20dudas%20sobre%20mi%20${item.nombre}" 
+                               class="btn-mini btn-wa-mini">💬 Consultar</a>
                         </div>
                     </div>
-                    <div class="history-actions">
-                        <button class="btn-mini btn-care" onclick="showCareDetails(${item.id})">📋 Ver Cuidados</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
     }
 
-    // --- MODAL "EL CHINAMPERO DICE" ---
-    function showCareDetails(id) {
-        const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
-        const item = list.find(p => p.id === id);
-        if (item) {
-            const body = document.getElementById("modalBody");
-            let tipsHtml = item.cuidados.consejos.map(t => `
-                <div class="tip-card">
-                    <span>🌱</span>
-                    <div>${t}</div>
-                </div>
-            `).join('');
-
-            body.innerHTML = `
-                <div style="text-align:left; border-bottom:1px solid #eee; margin-bottom:15px; padding-bottom:10px;">
-                    <p>☀️ <b>Luz:</b> ${item.cuidados.sol}</p>
-                    <p>💧 <b>Riego:</b> ${item.cuidados.riego}</p>
-                </div>
-                ${tipsHtml}
-            `;
-            document.getElementById("careModal").classList.remove("hidden");
+    function clearHistory() {
+        if(confirm("¿Deseas borrar tu jardín guardado?")) {
+            localStorage.removeItem('chinampa_garden');
+            document.getElementById("historySection").classList.add("hidden");
         }
     }
 
-    function closeModal() {
-        document.getElementById("careModal").classList.add("hidden");
-    }
-
-    // --- CÁMARA ---
     btnStart.onclick = async () => {
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        v.srcObject = s; v.classList.remove("hidden"); btnStart.classList.add("hidden"); btnShot.classList.remove("hidden");
+        try {
+            const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            v.srcObject = s;
+            v.classList.remove("hidden");
+            imgPrev.classList.add("hidden");
+            btnStart.classList.add("hidden");
+            btnShot.classList.remove("hidden");
+        } catch (e) { alert("Error al abrir cámara: " + e); }
     };
 
     btnShot.onclick = () => {
@@ -218,7 +193,9 @@ function updateSeasonBanner() {
             window.selectedFile = new File([b], "captura.jpg", {type: "image/jpeg"});
             btnUse.classList.remove("hidden");
         }, "image/jpeg", 0.8);
-        v.classList.add("hidden"); btnShot.classList.add("hidden"); imgPrev.classList.add("hidden");
+        c.classList.remove("hidden"); 
+        v.classList.add("hidden");
+        btnShot.classList.add("hidden");
     };
 
     fileInput.onchange = (e) => {
@@ -226,58 +203,78 @@ function updateSeasonBanner() {
         if (file) {
             window.selectedFile = file;
             imgPrev.src = URL.createObjectURL(file);
-            imgPrev.classList.remove("hidden"); v.classList.add("hidden"); btnUse.classList.remove("hidden");
+            imgPrev.classList.remove("hidden"); 
+            v.classList.add("hidden");
+            btnStart.classList.add("hidden");
+            btnUse.classList.remove("hidden");
         }
     };
 
-    // --- ANÁLISIS ---
     btnUse.onclick = async () => {
         if(!window.selectedFile) return;
+        
         progress.classList.remove("hidden");
+        const messages = ["Escaneando follaje...", "Analizando salud...", "Identificando especie...", "Preparando consejos..."];
+        let i = 0;
+        const interval = setInterval(() => {
+            loadingMsg.innerText = messages[i % messages.length];
+            i++;
+        }, 1500);
+
         const fd = new FormData();
         fd.append("image", window.selectedFile);
 
         try {
             const r = await fetch("/identify", { method: "POST", body: fd });
             const d = await r.json();
+            
             if(d.ok) {
                 const info = d.result;
                 saveToHistory(info);
-                
-                // Renderizado de resultados (LIMPIO Y SIN DUPLICADOS)
-                const tipsHtml = info.consejos.map(t => `
-                    <div class="tip-card">
-                        <span>🌱</span>
-                        <div>${t}</div>
-                    </div>
-                `).join('');
 
+                const waMsg = `Hola%20Chinampa!%20🌿%0A%0AAcabo%20de%20escanear%20esta%20planta%20con%20tu%20App:%0A✅%20*${info.nombre_comun}*%0A🧬%20_${info.nombre_cientifico}_`;
+                
                 document.getElementById("results").innerHTML = `
                     <div class="result-card">
-                        <h2 style="color:var(--primary);">${info.nombre_comun}</h2>
-                        <p><i>${info.nombre_cientifico}</i></p>
+                        <h2 style="color:var(--primary); margin-bottom:5px;">${info.nombre_comun}</h2>
+                        <p style="margin-top:0;"><i>${info.nombre_cientifico}</i></p>
                         <div class="warning-box">
                             <strong>🩺 Diagnóstico:</strong> ${info.salud}<br>
                             <small>${info.advertencias}</small>
                         </div>
                         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:20px 0;">
-                            <div class="care-badge">☀️<br><small>${info.sol}</small></div>
-                            <div class="care-badge">💧<br><small>${info.riego}</small></div>
-                            <div class="care-badge">🪴<br><small>${info.sustrato}</small></div>
+                            <div class="care-badge"><span>☀️</span><strong>Luz</strong><br>${info.sol || 'N/A'}</div>
+                            <div class="care-badge"><span>💧</span><strong>Riego</strong><br>${info.riego || 'N/A'}</div>
+                            <div class="care-badge"><span>🪴</span><strong>Tierra</strong><br>${info.sustrato || 'N/A'}</div>
                         </div>
-                        <h3 style="color:#2d5a27;">👨‍🌾 El Chinampero dice:</h3>
-                        ${tipsHtml}
-                        <button onclick="location.reload()" class="primary" style="margin-top:20px; background:#666;">Nueva consulta</button>
+                        <h3>Consejos del Experto:</h3>
+                        <ul style="padding-left:20px;">${info.consejos.map(t => `<li>${t}</li>`).join('')}</ul>
+                        <a href="https://wa.me/525620238734?text=${waMsg}" target="_blank" class="btn-wa-premium">🛒 Consultar Existencia</a>
+                        <button onclick="location.reload()" class="primary" style="margin-top:10px; background:#666;">Nueva consulta</button>
                     </div>`;
+                
                 document.getElementById("results").scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert("Error: " + d.error);
             }
-        } catch (e) { alert("Error de conexión"); }
-        finally { progress.classList.add("hidden"); }
+        } catch (e) {
+            alert("Hubo un problema con la conexión.");
+        } finally {
+            clearInterval(interval);
+            progress.classList.add("hidden");
+        }
     };
 
     updateSeasonBanner();
     renderHistory();
-    function clearHistory() { if(confirm("¿Borrar jardín?")) { localStorage.removeItem('chinampa_garden'); location.reload(); } }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(reg => console.log('Chinampa SW registrado'))
+                .catch(err => console.log('Error SW:', err));
+        });
+    }
 </script>
 </body>
 </html>

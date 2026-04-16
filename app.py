@@ -19,32 +19,39 @@ else:
     print("✅ API Key configurada correctamente")
 
 # Configuración del Modelo
-# Nota: He cambiado a gemini-1.5-flash porque tiene una cuota gratuita más amplia que gemini-3
 model = genai.GenerativeModel('gemini-3-flash-preview') 
 
 app = Flask(__name__)
 
-# --- PROMPT MEJORADO: Modo Doctor y Cuidados Rápidos ---
+# --- PROMPT MEJORADO: Modo Doctor y Validación de Plantas ---
 PROMPT_PLANTAS = """
-Analiza la imagen de esta planta como un experto botánico y doctor de plantas. 
-Si el objeto no es una planta, responde únicamente con {"error": "No se detectó una planta en la imagen"}.
+Analiza la imagen como un experto botánico y doctor de plantas de 'Chinampa'.
 
-Si es una planta, responde ESTRICTAMENTE en formato JSON con esta estructura:
+REGLA DE IDENTIFICACIÓN:
+1. Si el objeto NO es una planta (es un animal, persona, objeto, etc.), responde ESTRICTAMENTE con este JSON:
+{
+  "error": "No es una planta",
+  "identificado_como": "Nombre de lo que ves (ej. Un teclado, un gato, un humano)",
+  "consejo_chinampa": "Un comentario breve y gracioso del Chinampero sobre por qué esto no es una planta."
+}
+
+2. Si SÍ es una planta, responde ESTRICTAMENTE en formato JSON con esta estructura:
 {
   "nombre_cientifico": "Nombre en latín",
   "nombre_comun": "Nombre más popular",
-  "salud": "Estado general (Sana, Enferma, Estresada, o Plaga detectada)",
+  "salud": "Estado general (Sana, Enferma, Estresada, o Plaga)",
   "advertencias": "Analiza manchas, hongos o insectos. Si está sana, di que no se detectan plagas.",
-  "sol": "Horas de sol o tipo de luz (ej. Sol directo 6h)",
-  "riego": "Frecuencia estimada (ej. Cada 10 días)",
-  "sustrato": "Tipo de tierra recomendada (ej. Sustrato drenante mineral)",
+  "sol": "Horas de sol o tipo de luz",
+  "riego": "Frecuencia estimada",
+  "sustrato": "Tipo de tierra recomendada",
   "consejos": [
     "Consejo de riego",
     "Consejo de ubicación",
     "Tip de experto Chinampa"
   ]
 }
-No añadas texto extra, solo el JSON puro.
+
+No añadas texto extra, ni bloques de código (```), solo el JSON puro.
 """
 
 @app.route("/")
@@ -59,13 +66,20 @@ def identify():
     file = request.files["image"]
     
     try:
-        # Abrimos la imagen
+        # --- OPTIMIZACIÓN DE MEMORIA CON PILLOW ---
+        # Abrimos la imagen y la redimensionamos para evitar el SIGKILL en Render
         img = Image.open(file.stream)
+        img.thumbnail((800, 800))
         
+        # Convertimos la imagen optimizada a bytes para enviarla a la IA
+        img_byte_arr = io.BytesIO()
+        img.save(img_byte_arr, format='JPEG', quality=85)
+        optimized_image = Image.open(img_byte_arr)
+
         # --- BLOQUE DE CONTROL DE ERRORES AJUSTADO ---
         try:
-            # Petición a la IA
-            response = model.generate_content([PROMPT_PLANTAS, img])
+            # Petición a la IA con la imagen optimizada
+            response = model.generate_content([PROMPT_PLANTAS, optimized_image])
             
             # Limpieza de la respuesta para asegurar que sea JSON válido
             raw_text = response.text.strip()
@@ -74,32 +88,39 @@ def identify():
             elif "```" in raw_text:
                 raw_text = raw_text.split("```")[1].split("```")[0].strip()
             
-            plant_data = json.loads(raw_text)
+            data = json.loads(raw_text)
             
-            # Si la IA responde con un error de "No es planta"
-            if "error" in plant_data:
-                return jsonify({"ok": False, "error": plant_data["error"]})
+            # --- LÓGICA DE RESPUESTA DUAL (Planta vs No Planta) ---
+            if "error" in data:
+                return jsonify({
+                    "ok": True, 
+                    "es_planta": False, 
+                    "mensaje": data.get("identificado_como", "Objeto desconocido"),
+                    "bromita": data.get("consejo_chinampa", "¡Ups! Esto no necesita abono.")
+                })
                 
-            return jsonify({"ok": True, "result": plant_data})
+            # Caso: SÍ es una planta
+            return jsonify({
+                "ok": True, 
+                "es_planta": True, 
+                "result": data
+            })
 
         except Exception as e:
             error_str = str(e)
             print(f"DEBUG: Error detectado: {error_str}")
             
-            # Control específico para el error 429 (Cuota excedida)
             if "429" in error_str or "quota" in error_str.lower():
                 return jsonify({
                     "ok": False, 
-                    "error": "La IA está saturada por hoy (Límite alcanzado). ¡Intenta de nuevo en un momento o mañana!"
+                    "error": "La IA está saturada por hoy (Límite alcanzado). ¡Intenta de nuevo en un momento!"
                 }), 429
             
-            return jsonify({"ok": False, "error": "La IA está saturada por hoy. ¡Intenta de nuevo en un momento o mañana!"}), 500
-        # --------------------------------------------
+            return jsonify({"ok": False, "error": "Error al procesar con la IA. Intenta de nuevo."}), 500
 
     except Exception as e:
         print(f"Error de lectura de archivo: {e}")
         return jsonify({"ok": False, "error": "No se pudo leer la imagen enviada"}), 400
 
 if __name__ == "__main__":
-    # Importante: host 0.0.0.0 para que sea visible en tu red local y ngrok
     app.run(host="0.0.0.0", port=5000, debug=True)

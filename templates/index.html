@@ -253,7 +253,19 @@
         try {
             const r = await fetch("/identify", { method: "POST", body: fd });
             const d = await r.json();
+
             if(d.ok) {
+                if (d.es_planta === false) {
+                    document.getElementById("results").innerHTML = `
+                        <div class="result-card" style="padding:20px; border:2px solid #ffcc00; border-radius:20px; margin-top:20px; background:#fffdf5;">
+                            <h2 style="color:var(--primary);">🕵️ El Doctor dice:</h2>
+                            <p>He detectado: <b>${d.mensaje}</b></p>
+                            <p style="font-style:italic; color:#666;">"${d.bromita}"</p>
+                            <button onclick="location.reload()" class="primary">🔄 Intentar con una planta</button>
+                        </div>`;
+                    return;
+                }
+
                 const info = d.result;
                 saveToHistory(info);
                 const tipsHtml = info.consejos.map(t => `<div class="tip-card"><span>🌱</span><div>${t}</div></div>`).join('');

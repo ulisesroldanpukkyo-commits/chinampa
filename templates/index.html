@@ -121,21 +121,26 @@
 
     // --- CORRECCIÓN: Función para mostrar detalles incluyendo consejos ---
     function showCareDetails(id) {
-        const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
-        const item = list.find(p => p.id === id);
-        
-        if (item) {
-            const listaConsejos = (item.cuidados.consejos && item.cuidados.consejos.length > 0) 
-                ? "\n• " + item.cuidados.consejos.join("\n• ") 
-                : "\nNo hay consejos adicionales.";
+    const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
+    const item = list.find(p => p.id === id);
+    
+    if (item) {
+        // Usamos emojis y separadores para que el alert no se vea amontonado
+        const misConsejos = (item.cuidados.consejos && item.cuidados.consejos.length > 0) 
+            ? "────────────────────\n" + item.cuidados.consejos.map(c => "🟢 " + c).join("\n\n") 
+            : "\nNo hay consejos adicionales.";
 
-            alert(`📋 GUÍA DE CUIDADOS: ${item.nombre}\n\n` +
-                  `☀️ Sol: ${item.cuidados.sol}\n` +
-                  `💧 Riego: ${item.cuidados.riego}\n` +
-                  `🪴 Tierra: ${item.cuidados.sustrato}\n\n` +
-                  `💡 CONSEJOS CHINAMPA:${listaConsejos}`);
-        }
+        alert(
+            `🌿 FICHA DE: ${item.nombre.toUpperCase()}\n` +
+            `🧬 ${item.cientifico}\n` +
+            `────────────────────\n` +
+            `☀️ LUZ: ${item.cuidados.sol}\n` +
+            `💧 RIEGO: ${item.cuidados.riego}\n` +
+            `🪴 TIERRA: ${item.cuidados.sustrato}\n\n` +
+            `✨ TIPS DE CHINAMPA:\n${misConsejos}`
+        );
     }
+}
 
     function renderHistory() {
         const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');

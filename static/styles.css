@@ -411,6 +411,29 @@ button.primary:active { transform: scale(0.96); }
     font-size: 0.9rem;
     text-align: center;
 }
+/* Asegúrate de que la clase .primary tenga este aspecto */
+.primary {
+    display: block;
+    width: 100%;
+    background-color: #4caf50; /* El verde llamativo de Analizar Planta */
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); /* Sombra suave verde */
+    transition: all 0.2s ease;
+    margin-top: 15px;
+}
+
+/* Efecto al pasar el mouse o tocar (para que se sienta vivo) */
+.primary:hover, .primary:active {
+    background-color: #43a047; /* Un verde un poco más oscuro al presionar */
+    transform: translateY(-1px); /* Pequeño levante */
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
 .season-banner b { display: block; color: #1b5e20; font-size: 0.75rem; text-transform: uppercase; }
 .btn-care { background: #e8f5e9; color: var(--primary); }
 .btn-wa-mini { background: #25d366; color: white; text-decoration: none; text-align: center; }

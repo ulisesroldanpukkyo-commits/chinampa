@@ -111,12 +111,27 @@
     const progress = document.getElementById("progress");
 
     // --- TEMPORADA ---
-    function updateSeasonBanner() {
-        const month = new Date().getMonth() + 1; 
-        const banner = document.getElementById("seasonBanner");
-        banner.innerHTML = "🌿 <b>Chinampa:</b> Sustrato mineral para un drenaje perfecto.";
-        banner.className = "season-banner season-spring";
-    }
+function updateSeasonBanner() {
+    const banner = document.getElementById("seasonBanner");
+    
+    const frasesChinamperas = [
+        "🌿 <b>Dato Curioso:</b> Las suculentas cierran sus poros de día para no perder agua. ¡Son expertas en ahorro!",
+        "👨‍🌾 <b>El Chinampero dice:</b> Si las hojas de tu planta están tristes y amarillas, quizás tiene 'pies mojados' (exceso de agua).",
+        "🌸 <b>¿Sabías qué?</b> Hablarle a las plantas sí funciona, no porque entiendan, sino por el CO2 que exhalas al hablarles.",
+        "🌵 <b>Tip Chinampa:</b> El mejor sustrato es el que parece tierra de volcán: poroso, ligero y muy mineral.",
+        "💧 <b>Dato Curioso:</b> El exceso de mimos mata más plantas que el olvido. ¡No riegues si la tierra sigue húmeda!",
+        "🌞 <b>El Chinampero dice:</b> La luz de la ventana no es igual que la del sol directo. ¡Gira tu maceta cada semana!",
+        "🧬 <b>Dato Científico:</b> Las plantas pueden 'escuchar' el agua corriendo a través de las tuberías y dirigir sus raíces hacia allá.",
+        "💡 <b>Tip de Oro:</b> Si vas a trasplantar, hazlo por la tarde para que la planta descanse toda la noche del estrés."
+    ];
+
+    // Elegimos una frase al azar
+    const fraseAleatoria = frasesChinamperas[Math.floor(Math.random() * frasesChinamperas.length)];
+    
+    // Aplicamos el diseño
+    banner.className = "season-banner season-spring"; // Mantenemos tu clase de estilo verde
+    banner.innerHTML = fraseAleatoria;
+}    
 
     // --- HISTORIAL ---
     function saveToHistory(plantData) {

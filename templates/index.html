@@ -4,11 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <title>Chinampa PlantScan AI 🌿</title>
+    <title>Chinampa PlantScan AI</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icono-192.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icono-192.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#2d5a27">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+
     <style>
-        /* --- ESTILOS RECIÉN RECUPERADOS Y NUEVOS --- */
-        :root { --primary: #2d5a27; --wa: #25d366; --brown: #795548; }
+        :root { 
+            --primary: #2d5a27; 
+            --wa: #25d366; 
+            --brown: #795548; 
+        }
 
         /* Splash Screen */
         .splash-screen {
@@ -16,8 +26,19 @@
             background-color: #f6faf5; display: flex; justify-content: center;
             align-items: center; z-index: 10000; transition: opacity 0.5s;
         }
-        .cactus-loader { font-size: 5rem; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        .cactus-loader { 
+            width: 120px; height: 120px; 
+            border-radius: 20%; 
+            animation: pulse 1.5s infinite; 
+            object-fit: cover;
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
 
         /* Tarjetas de Consejos "El Chinampero" */
         .tip-card {
@@ -38,26 +59,52 @@
         .bg-sustrato { background-color: var(--brown); }
 
         /* Modal */
-        .modal { position: fixed; z-index: 9000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
+        .modal { 
+            position: fixed; z-index: 9000; left: 0; top: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; 
+        }
+        .modal-content { 
+            background: white; padding: 25px; border-radius: 25px; 
+            width: 85%; max-width: 400px; text-align: center; 
+        }
         
         .hidden { display: none !important; }
         .hidden-splash { opacity: 0; visibility: hidden; }
+
+        /* Botón Primario (Verde igual al de Analizar) */
+        .primary {
+            display: block; width: 100%; background-color: #4caf50;
+            color: white; padding: 15px; border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            transition: all 0.2s ease; margin-top: 15px;
+        }
+        .primary:active { transform: scale(0.98); background-color: #43a047; }
+        
+        .season-banner {
+            background: #e8f5e9; border: 1px solid #c8e6c9; color: #2e7d32;
+            padding: 15px; border-radius: 15px; margin: 15px 0; font-size: 0.9rem; text-align: center;
+        }
+        .season-banner b { display: block; color: #1b5e20; font-size: 0.75rem; text-transform: uppercase; }
     </style>
 </head>
+
 <body>
 
     <div id="splashScreen" class="splash-screen">
         <div style="text-align: center;">
-            <div class="cactus-loader">🌵</div>
-            <h1 style="color:var(--primary); font-size: 1.8rem;">¡Bienvenido,<br>Señor/a de las Plantas!</h1>
-            <p style="color: #888;">Chinampa PlantScan AI</p>
+            <img src="{{ url_for('static', filename='icono-192.png') }}" class="cactus-loader">
+            <h1 style="color:var(--primary); font-size: 1.6rem; margin-top: 15px;">¡Bienvenido,<br>Señor/a de las Plantas!</h1>
+            <p style="color: #888; font-style: italic;">Raíces Neuronales 🧬</p>
         </div>
     </div>
 
     <main class="container">
-        <header class="brand-header">
-            <h1 class="title-text">Chinampa PlantScan AI 🌿</h1>
+        <header class="brand-header" style="display: flex; align-items: center; justify-content: center; gap: 12px; padding: 15px 0;">
+            <img src="{{ url_for('static', filename='icono-192.png') }}" alt="Logo" style="width: 45px; height: 45px; border-radius: 50%;">
+            <h1 class="title-text" style="margin: 0; font-size: 1.3rem; color: var(--primary); font-weight: 800;">
+                Chinampa PlantScan AI
+            </h1>
         </header>
 
         <div id="seasonBanner" class="season-banner"></div>
@@ -70,7 +117,7 @@
             </div>
             <div class="cam-controls">
                 <button id="btnStart" class="primary">Encender Cámara</button>
-                <button id="btnShot" class="primary hidden">Tomar Foto</button>
+                <button id="btnShot" class="primary hidden" style="background:#555;">Tomar Foto</button>
                 <input id="fileInput" type="file" accept="image/*" class="hidden">
                 <label for="fileInput" style="display:block; text-align:center; padding:15px; cursor:pointer; color:var(--primary); font-weight:bold;">📁 Abrir Galería</label>
                 <button id="btnUse" class="primary hidden" style="background-color: #4caf50;">🔍 Analizar Planta</button>
@@ -84,38 +131,34 @@
         <div id="results" class="results"></div>
 
         <div id="historySection" class="history-container hidden">
-            <h3 style="color:var(--primary);">🌱 Mi Jardín</h3>
+            <h3 style="color:var(--primary); margin: 20px 0 10px;">🌱 Mi Jardín</h3>
             <div id="historyList" class="history-list"></div>
-            <button onclick="clearHistory()" style="background:none; border:none; color:#999; font-size:0.7rem; text-decoration:underline;">Borrar historial</button>
+            <button onclick="clearHistory()" style="background:none; border:none; color:#999; font-size:0.7rem; text-decoration:underline; margin-top:10px;">Borrar historial</button>
         </div>
 
         <div id="careModal" class="modal hidden">
             <div class="modal-content">
-                <div class="modal-header"><span style="font-size:3rem;">👨‍🌾</span><h2 id="modalTitle">El Chinampero dice:</h2></div>
-                <div id="modalBody" class="modal-body" style="margin:20px 0;"></div>
+                <div class="modal-header">
+                    <img src="{{ url_for('static', filename='icono-192.png') }}" style="width: 60px; height: 60px; border-radius: 15px; margin-bottom: 10px;">
+                    <h2 id="modalTitle">El Chinampero dice:</h2>
+                </div>
+                <div id="modalBody" class="modal-body"></div>
                 <button onclick="closeModal()" class="primary">¡Gracias!</button>
             </div>
         </div>
 
         <footer class="main-footer" style="text-align:center; padding:40px 20px; margin-top:40px; border-top:1px solid #eee; background: #fcfcfc; border-radius: 30px 30px 0 0;">
-    <p style="font-style: italic; color: #444; font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">
-        Raíces Neuronales: Inteligencia para tu Jardín 🧬
-    </p>
-    
-    <div style="margin: 20px 0;">
-        <p style="color:var(--primary); font-weight:800; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 5px;">CONTACTO CHINAMPA</p>
-        <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">📍 Xochimilco, CDMX</p>
-        <a href="https://wa.me/525620238734" target="_blank" class="btn-wa-venta bg-whatsapp" style="display:inline-block; padding:10px 25px; border-radius: 50px;">
-            WhatsApp: 5620238734
-        </a>
-    </div>
-
-    <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
-        <p style="font-size: 0.75rem; color: #aaa; margin: 0;">
-            <b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b>
-        </p>
-    </div>
-</footer>
+            <p style="font-style: italic; color: #444; font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">
+                Raíces Neuronales: Inteligencia para tu Jardín 🧬
+            </p>
+            <div style="margin: 20px 0;">
+                <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">📍 Xochimilco, CDMX</p>
+                <a href="https://wa.me/525620238734" target="_blank" class="btn-wa-venta bg-whatsapp" style="display:inline-block; padding:10px 25px; border-radius: 50px;">
+                    WhatsApp: 5620238734
+                </a>
+            </div>
+            <p style="font-size: 0.75rem; color: #aaa; margin: 0;"><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
+        </footer>
     </main>
 
 <script>
@@ -159,13 +202,13 @@
             listDiv.innerHTML = list.map(item => `
                 <div class="history-card" style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
                     <div><b>${item.nombre}</b><br><small>${item.fecha}</small></div>
-                    <button class="btn-mini" onclick="showCareDetails(${item.id})" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">Ver Cuidados</button>
+                    <button class="btn-mini" onclick="showCareDetails(${item.id})" style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">Ver Cuidados</button>
                 </div>
             `).join('');
         }
     }
 
-    // --- MODAL CON CONTACTO ---
+    // --- MODAL DETALLES ---
     function showCareDetails(id) {
         const list = JSON.parse(localStorage.getItem('chinampa_garden') || '[]');
         const item = list.find(p => p.id === id);
@@ -175,10 +218,12 @@
                 <div style="text-align:left; border-bottom:1px solid #eee; margin-bottom:15px; padding-bottom:10px;">
                     <p>☀️ <b>Luz:</b> ${item.cuidados.sol}</p>
                     <p>💧 <b>Riego:</b> ${item.cuidados.riego}</p>
+                    <p>🪴 <b>Sustrato:</b> ${item.cuidados.sustrato}</p>
                 </div>
                 ${tipsHtml}
-                <div style="margin-top:15px;">
-                    <a href="https://wa.me/525620238734?text=Hola%20Chinampero!%20Dudas%20sobre%20mi%20${item.nombre}" style="color:var(--wa); font-weight:bold; text-decoration:none;">💬 Preguntar al experto</a>
+                <div style="margin-top:15px; text-align:center; border-top:1px solid #eee; padding-top:10px;">
+                    <p style="font-size:0.7rem; font-style:italic; color:var(--primary); margin-bottom:10px;">Raíces Neuronales 🧬</p>
+                    <a href="https://wa.me/525620238734?text=Hola%20Chinampero!%20Dudas%20sobre%20mi%20${item.nombre}" style="color:var(--wa); font-weight:bold; text-decoration:none;">💬 Consultar al experto</a>
                 </div>
             `;
             document.getElementById("careModal").classList.remove("hidden");
@@ -204,25 +249,26 @@
                 const tipsHtml = info.consejos.map(t => `<div class="tip-card"><span>🌱</span><div>${t}</div></div>`).join('');
                 
                 document.getElementById("results").innerHTML = `
-                    <div class="result-card" style="padding:20px; border:1px solid #eee; border-radius:20px; margin-top:20px;">
-                        <h2 style="color:var(--primary);">${info.nombre_comun}</h2>
-                        <div style="background:#fff3cd; padding:10px; border-radius:10px; margin:10px 0;">
+                    <div class="result-card" style="padding:20px; border:1px solid #eee; border-radius:20px; margin-top:20px; background:white;">
+                        <h2 style="color:var(--primary); margin-bottom:5px;">${info.nombre_comun}</h2>
+                        <p style="margin-bottom:15px;"><i>${info.nombre_cientifico}</i></p>
+                        <div style="background:#fff3cd; padding:15px; border-radius:12px; margin-bottom:20px;">
                             <strong>🩺 Diagnóstico:</strong> ${info.salud}<br><small>${info.advertencias}</small>
                         </div>
                         <a href="https://wa.me/525620238734?text=Hola!%20Tienes%20disponible%20la%20planta%20${info.nombre_comun}?" target="_blank" class="btn-wa-venta bg-whatsapp">🛒 Consultar Existencia</a>
                         <a href="https://wa.me/525620238734?text=Necesito%20el%20sustrato%20${info.sustrato}" target="_blank" class="btn-wa-venta bg-sustrato">🪴 Comprar Sustrato</a>
-                        <h3 style="margin-top:20px;">👨‍🌾 El Chinampero dice:</h3>
+                        <h3 style="margin-top:20px; color:#2d5a27;">👨‍🌾 El Chinampero dice:</h3>
                         ${tipsHtml}
-                        <button onclick="location.reload()" class="primary">
-                            🔄 Nueva Consulta
-                        </button>
+                        <p style="text-align:center; font-style:italic; font-size:0.8rem; color:#888; margin-top:20px;">Raíces Neuronales 🧬</p>
+                        <button onclick="location.reload()" class="primary">🔄 Nueva Consulta</button>
                     </div>`;
+                document.getElementById("results").scrollIntoView({ behavior: 'smooth' });
             }
-        } catch (e) { alert("Error"); }
+        } catch (e) { alert("Error de conexión"); }
         finally { document.getElementById("progress").classList.add("hidden"); }
     };
 
-    // --- CÁMARA BÁSICA ---
+    // --- CÁMARA ---
     const v = document.getElementById("camVideo");
     const c = document.getElementById("camCanvas");
     const btnStart = document.getElementById("btnStart");
@@ -250,11 +296,12 @@
         window.selectedFile = f;
         document.getElementById("filePreview").src = URL.createObjectURL(f);
         document.getElementById("filePreview").classList.remove("hidden");
-    v.classList.add("hidden"); btnUse.classList.remove("hidden");
+        v.classList.add("hidden"); btnUse.classList.remove("hidden");
     };
 
     updateSeasonBanner();
     renderHistory();
+    function clearHistory() { if(confirm("¿Borrar historial?")) { localStorage.removeItem('chinampa_garden'); location.reload(); } }
 </script>
 </body>
 </html>

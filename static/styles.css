@@ -7,6 +7,150 @@
     --error: #e74c3c;
     --warning: #f39c12;
 }
+/* --- DISEÑO DE USUARIO --- */
+.user-badge {
+    margin: 10px 0 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-google-elegant {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    padding: 10px 20px;
+    border-radius: 50px; /* Estilo píldora */
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.btn-google-elegant:hover {
+    background: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.user-logged {
+    display: flex;
+    align-items: center;
+    background: #e8f5e9; /* Verde muy suave */
+    padding: 8px 15px;
+    border-radius: 50px;
+    border: 1px solid #c8e6c9;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-data {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.user-welcome { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+.user-name { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+
+.btn-logout-minimal {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    border-left: 1px solid #cbd5cb;
+    margin-left: 5px;
+}
+
+.user-control-panel {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+/* Botón de Google Estilizado */
+.google-auth-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1.5px solid #eee;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    color: #444;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.google-auth-button:hover {
+    background: #fdfdfd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.google-auth-button img { width: 20px; height: 20px; }
+
+/* Tarjeta de Perfil Logueado */
+.profile-card {
+    display: flex;
+    align-items: center;
+    background: #f0f7f0; /* Fondo verde menta muy suave */
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1.5px solid #d0e7d0;
+    gap: 12px;
+}
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--primary); /* Tu verde principal */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-details { display: flex; flex-direction: column; text-align: left; line-height: 1.1; }
+.profile-greet { font-size: 0.65rem; color: #777; letter-spacing: 0.5px; }
+.profile-name { font-size: 0.9rem; font-weight: 800; color: #2d5a27; }
+
+.profile-exit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding-left: 10px;
+    border-left: 1px solid #c0d8c0;
+    transition: opacity 0.2s;
+}
+
+.profile-exit:hover { opacity: 0.7; }
 /* --- ESTILO DEL BOTÓN DE GOOGLE --- */
 .btn-google {
     /* Diseño Base */

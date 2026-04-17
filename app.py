@@ -165,7 +165,7 @@ def serve_manifest():
 def get_global_total():
     try:
         # Esto le pregunta a Google Sheets el número actual
-        r = requests.get(URL_CONTADOR_SHEETS, timeout=5)
+        r = requests.get(URL_CONTADOR_SHEETS, timeout=10)
         return r.text
     except Exception as e:
         print(f"Error al consultar Google: {e}")

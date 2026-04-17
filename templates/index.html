@@ -118,7 +118,20 @@
         </header>
 
         <div id="seasonBanner" class="season-banner"></div>
+        
+        <div class="chinampa-header" style="display: flex; justify-content: flex-end; padding: 15px;">
+    
+            <button id="btn-login" class="btn-google" onclick="loginGoogle()">
+                Iniciar sesión con Google
+            </button>
+            
+            <div id="user-info" style="display:none; align-items:center; gap:10px;">
+                <span id="user-name" style="font-weight:bold;"></span>
+                <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer; font-size:12px;">(Salir)</button>
+            </div>
+        </div>
 
+        </div>
         <div id="paneCamera" class="pane">
             <div class="cam-wrap">
                 <video id="camVideo" autoplay playsinline muted style="width:100%; border-radius:15px;"></video>
@@ -135,11 +148,12 @@
         </div>
 
         <div id="progress" class="progress hidden">
-            <div class="loader-container"><div class="spinner"></div><p id="loadingMessage">Consultando al Doctor...</p></div>
+            <div class="loader-container"><div class="spinner"></div><p id="loadingMessage">Consultando al Chinampero...</p></div>
         </div>
 
         <div id="results" class="results"></div>
-
+  
+        <span id="user-info"></span>
         <div id="historySection" class="history-container hidden">
             <h3 style="color:var(--primary); margin: 20px 0 10px;">🌱 Mi Jardín</h3>
             <div id="historyList" class="history-list"></div>
@@ -168,6 +182,7 @@
                 </a>
             </div>
             <p style="font-size: 0.75rem; color: #aaa; margin: 0;"><b>© 2026 Chinampa | Ing. Ulises Roldán Olivares</b></p>
+            <p id="globalCounter" style="font-size: 0.85rem; color: #2e7d32; font-weight: bold; margin-top: 10px;"></p>
         </footer>
     </main>
 
@@ -257,7 +272,17 @@
         document.getElementById("progress").classList.remove("hidden");
         const fd = new FormData();
         fd.append("image", window.selectedFile);
+    // Lógica de Identidad Forzada: Si no hay dato o es string vacío, mandamos "N/A"
+    let nameToSend = "N/A";
+    let emailToSend = "N/A";
 
+    if (window.currentUser) {
+        nameToSend = (window.currentUser.name && window.currentUser.name.trim() !== "") ? window.currentUser.name : "N/A";
+        emailToSend = (window.currentUser.email && window.currentUser.email.trim() !== "") ? window.currentUser.email : "N/A";
+    }
+
+    fd.append("user_name", nameToSend);
+    fd.append("user_email", emailToSend);
         try {
             const r = await fetch("/identify", { method: "POST", body: fd });
             const d = await r.json();
@@ -266,8 +291,8 @@
                 if (d.es_planta === false) {
                     document.getElementById("results").innerHTML = `
                         <div class="result-card" style="padding:20px; border:2px solid #ffcc00; border-radius:20px; margin-top:20px; background:#fffdf5;">
-                            <h2 style="color:var(--primary);">🕵️ El Doctor dice:</h2>
-                            <p>He detectado: <b>${d.mensaje}</b></p>
+                            <h2 style="color:var(--primary);"></h2>
+                            <p>He detectado: <b>${d.mensaje}</b>👨‍🌾 El Chinampero dice:</p>
                             <p style="font-style:italic; color:#666;">"${d.bromita}"</p>
                             <button onclick="location.reload()" class="primary">🔄 Intentar con una planta</button>
                         </div>`;
@@ -275,25 +300,37 @@
                 }
 
                 const info = d.result;
-                saveToHistory(info);
+                saveToHistory(info); // Aquí se guarda para el historial
                 const tipsHtml = info.consejos.map(t => `<div class="tip-card"><span>🌱</span><div>${t}</div></div>`).join('');
                 
+                // --- AQUÍ ESTÁ LA CORRECCIÓN: AGREGAMOS LOS CAMPOS QUE FALTABAN ---
                 document.getElementById("results").innerHTML = `
                     <div class="result-card" style="padding:20px; border:1px solid #eee; border-radius:20px; margin-top:20px; background:white;">
                         <h2 style="color:var(--primary); margin-bottom:5px;">${info.nombre_comun}</h2>
                         <p style="margin-bottom:15px;"><i>${info.nombre_cientifico}</i></p>
+                        
                         <div style="background:#fff3cd; padding:15px; border-radius:12px; margin-bottom:20px;">
                             <strong>🩺 Diagnóstico:</strong> ${info.salud}<br><small>${info.advertencias}</small>
                         </div>
+
+                        <div style="text-align:left; background:#f9f9f9; padding:15px; border-radius:12px; margin-bottom:20px; border-left: 5px solid var(--primary);">
+                            <p style="margin: 5px 0;">☀️ <b>Luz:</b> ${info.sol}</p>
+                            <p style="margin: 5px 0;">💧 <b>Riego:</b> ${info.riego}</p>
+                            <p style="margin: 5px 0;">🪴 <b>Sustrato:</b> ${info.sustrato}</p>
+                        </div>
+
                         <a href="https://wa.me/525620238734?text=Hola!%20Tienes%20disponible%20la%20planta%20${info.nombre_comun}?" target="_blank" class="btn-wa-venta bg-whatsapp">🛒 Consultar Existencia</a>
                         <a href="https://wa.me/525620238734?text=Necesito%20el%20sustrato%20${info.sustrato}" target="_blank" class="btn-wa-venta bg-sustrato">🪴 Comprar Sustrato</a>
+                        
                         <h3 style="margin-top:20px; color:#2d5a27;">👨‍🌾 El Chinampero dice:</h3>
                         ${tipsHtml}
+                        
                         <p style="text-align:center; font-style:italic; font-size:0.8rem; color:#888; margin-top:20px;">"Raíces Neuronales: Inteligencia para tu Jardín" </p>
                         <button onclick="location.reload()" class="primary">🔄 Nueva Consulta</button>
                     </div>`;
                 document.getElementById("results").scrollIntoView({ behavior: 'smooth' });
             }
+
         } catch (e) { alert("Error de conexión"); }
         finally { document.getElementById("progress").classList.add("hidden"); }
     };
@@ -332,6 +369,151 @@
     updateSeasonBanner();
     renderHistory();
     function clearHistory() { if(confirm("¿Borrar historial?")) { localStorage.removeItem('chinampa_garden'); location.reload(); } }
+
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+            .then(reg => console.log('SW registrado', reg))
+            .catch(err => console.log('SW error', err));
+    });
+}
+
+async function cargarImpacto() {
+    const el = document.getElementById("globalCounter");
+    try {
+        const r = await fetch('/get_global_total');
+        const n = await r.text();
+        if (n !== "...") {
+            el.innerHTML = `🌟 Hemos ayudado a cuidar <b>${n}</b> plantas en la comunidad.`;
+        }
+    } catch (e) { console.log("Error al cargar contador"); }
+}
+window.addEventListener('load', cargarImpacto);
+
+</script>
+<script type="module">
+    // Usamos la versión estable 10.7.1
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCeg8oKsiuw2-FYudHWg5XYBprOYzL1qOM",
+        authDomain: "chinampa-app.firebaseapp.com",
+        projectId: "chinampa-app",
+        storageBucket: "chinampa-app.firebasestorage.app",
+        messagingSenderId: "705136549567",
+        appId: "1:705136549567:web:5bfe82e7dccfd1dbc0700a",
+        measurementId: "G-VC4H2SWREC"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // HACEMOS LAS FUNCIONES DISPONIBLES PARA EL HTML (Evita el 'not defined')
+    window.loginGoogle = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Error en Login:", error);
+            alert("Error al iniciar sesión: " + error.message);
+        }
+    };
+
+    window.logout = () => signOut(auth);
+
+    // ESCUCHAR CAMBIOS DE USUARIO
+    onAuthStateChanged(auth, (user) => {
+        const btn = document.getElementById("btn-login");
+        const info = document.getElementById("user-info");
+        const nameLabel = document.getElementById("user-name-label");
+
+        if (user) {
+            window.currentUser = { name: user.displayName, email: user.email };
+            if(btn) btn.style.display = "none";
+            if(info) info.style.display = "flex";
+            if(nameLabel) nameLabel.innerText = user.displayName;
+        } else {
+            window.currentUser = null;
+            if(btn) btn.style.display = "flex";
+            if(info) info.style.display = "none";
+        }
+    });
+
+    // --- FUNCIÓN DE ANÁLISIS SINCRONIZADA CON 10 COLUMNAS ---
+    document.getElementById("btnUse").onclick = async () => {
+        if(!window.selectedFile) {
+            alert("Toma una foto o selecciona una imagen primero.");
+            return;
+        }
+
+        document.getElementById("progress").classList.remove("hidden");
+        
+        const fd = new FormData();
+        fd.append("image", window.selectedFile);
+
+        // FORZADO DE N/A PARA QUE NO HAYA CELDAS VACÍAS EN TU EXCEL
+        let nameToSend = "N/A";
+        let emailToSend = "N/A";
+
+        if (window.currentUser) {
+            nameToSend = window.currentUser.name || "N/A";
+            emailToSend = window.currentUser.email || "N/A";
+        }
+
+        fd.append("user_name", nameToSend);
+        fd.append("user_email", emailToSend);
+
+        try {
+            const r = await fetch("/identify", { method: "POST", body: fd });
+            if (!r.ok) throw new Error("Error en el servidor");
+            
+            const d = await r.json();
+
+            if(d.ok) {
+                if(d.es_planta === false) {
+                    document.getElementById("results").innerHTML = `
+                        <div class="result-card" style="border:2px solid orange;">
+                            <h3>${d.mensaje}</h3>
+                            <p>${d.bromita}</p>
+                        </div>`;
+                } else {
+                    const info = d.result;
+                    // Aquí llamamos a tu función de guardar historial si la tienes
+                    if (typeof saveToHistory === "function") saveToHistory(info);
+                    
+                    const tips = info.consejos.map(t => `<div class="tip-card"><span>🌱</span><div>${t}</div></div>`).join('');
+                    
+                    document.getElementById("results").innerHTML = `
+                        <div class="result-card">
+                            <h2 style="color:var(--primary);">${info.nombre_comun}</h2>
+                            <p><i>${info.nombre_cientifico}</i></p>
+                            <div style="background:#fff3cd; padding:15px; border-radius:12px; margin: 15px 0;">
+                                <strong>🩺 Diagnóstico:</strong> ${info.salud}<br><small>${info.advertencias}</small>
+                            </div>
+                            <div style="background:#f9f9f9; padding:15px; border-radius:12px; text-align:left;">
+                                <p>☀️ <b>Luz:</b> ${info.sol}</p>
+                                <p>💧 <b>Riego:</b> ${info.riego}</p>
+                                <p>🪴 <b>Sustrato:</b> ${info.sustrato}</p>
+                            </div>
+                            <a href="https://wa.me/525620238734?text=Busco%20la%20planta%20${info.nombre_comun}" target="_blank" class="btn-wa-venta bg-whatsapp">🛒 Consultar Existencia</a>
+                            <a href="https://wa.me/525620238734?text=Busco%20sustrato%20${info.sustrato}" target="_blank" class="btn-wa-venta bg-sustrato">🪴 Comprar Sustrato</a>
+                            <h3 style="margin-top:25px; color:var(--primary);">👨‍🌾 El Chinampero dice:</h3>
+                            ${tips}
+                            <button onclick="location.reload()" class="primary">🔄 Nueva Consulta</button>
+                        </div>`;
+                    document.getElementById("results").scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error al conectar con el servidor.");
+        } finally {
+            document.getElementById("progress").classList.add("hidden");
+        }
+    };
 </script>
 
 </body>

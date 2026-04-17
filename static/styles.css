@@ -7,7 +7,49 @@
     --error: #e74c3c;
     --warning: #f39c12;
 }
+/* --- ESTILO DEL BOTÓN DE GOOGLE --- */
+.btn-google {
+    /* Diseño Base */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el contenido */
+    background-color: #ffffff; /* Blanco limpio */
+    color: #5f6368; /* Gris oscuro para el texto */
+    border: 1px solid #ddd; /* Borde sutil */
+    border-radius: 8px; /* Bordes redondeados modernos */
+    
+    /* Tamaño y Espaciado Táctil */
+    padding: 12px 18px; /* Más padding para que sea fácil de tocar */
+    font-family: 'Roboto', sans-serif; /* Tipografía oficial */
+    font-size: 16px; /* Texto más grande */
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); /* Sombra suave */
+    transition: all 0.2s;
+    
+    /* Icono de Google (Background Image) */
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg');
+    background-repeat: no-repeat;
+    background-size: 20px; /* Tamaño del icono G */
+    background-position: 15px center; /* Icono a la izquierda */
+    
+    /* Ajuste de Texto */
+    padding-left: 45px; /* Espacio para que el texto no tape el icono */
+    margin: 10px auto; /* Centrado en móviles */
+    width: 280px; /* Ancho cómodo */
+}
 
+/* Efectos al pasar el mouse/tocar */
+.btn-google:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-color: #ddd;
+}
+.btn-google img {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg);

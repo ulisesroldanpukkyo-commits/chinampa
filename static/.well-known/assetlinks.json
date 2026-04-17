@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.chinampa.plantscan",
+    "sha256_cert_fingerprints": ["EB:49:94:EC:70:DF:CD:AB:8F:90:5A:16:A2:A5:6F:9B:27:95:39:EE:FD:DE:5D:EF:9B:26:9D:63:20:DC:29:52"]
+  }
+}]
